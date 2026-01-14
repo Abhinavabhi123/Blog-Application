@@ -1,0 +1,92 @@
+/* Editor outer wrapper */
+.editorWrapper {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 24px;
+  background: #e4e4e4;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* Paragraph */
+.editorWrapper .ce-paragraph {
+  font-size: 16px;
+  line-height: 1.75;
+  color: #1f2937;
+  margin-bottom: 14px;
+}
+
+/* Headings */
+.editorWrapper .ce-header {
+  font-weight: 700;
+  margin: 28px 0 14px;
+  color: #020617;
+}
+
+.editorWrapper h2 {
+  font-size: 28px;
+}
+
+.editorWrapper h3 {
+  font-size: 22px;
+}
+
+.editorWrapper h4 {
+  font-size: 18px;
+}
+
+/* Quote block */
+.editorWrapper .cdx-quote {
+  border-left: 4px solid #6366f1;
+  padding-left: 18px;
+  font-style: italic;
+  color: #374151;
+  margin: 24px 0;
+}
+
+/* Code block */
+.editorWrapper .ce-code {
+  background: #020617;
+  color: #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  font-size: 14px;
+  font-family: "Fira Code", monospace;
+  overflow-x: auto;
+}
+
+/* List */
+.editorWrapper .cdx-list {
+  padding-left: 24px;
+  margin-bottom: 14px;
+}
+
+.editorWrapper ul {
+  list-style: disc;
+}
+
+.editorWrapper ol {
+  list-style: decimal;
+}
+
+/* Image */
+.editorWrapper .image-tool img {
+  border-radius: 10px;
+  margin: 20px 0;
+  max-width: 100%;
+}
+
+/* Toolbar width fix */
+.ce-toolbar__content {
+  max-width: 100%;
+}
+
+/* Toolbar buttons */
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn {
+  color: #4f46e5;
+}
+
+/* Placeholder text */
+.ce-paragraph[data-placeholder]:empty::before {
+  color: #9ca3af;
+}

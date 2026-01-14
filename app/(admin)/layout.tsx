@@ -12,6 +12,7 @@ import {
   FaSignOutAlt,
   FaBars,
 } from "react-icons/fa";
+import { PiReadCvLogoFill } from "react-icons/pi";
 import styles from "./adminLayout.module.css";
 
 export default function AdminLayout({
@@ -54,6 +55,10 @@ export default function AdminLayout({
           <Link href="/admin/categories" className={styles.navItem}>
             <FaLayerGroup />
             {!collapsed && <span>Categories</span>}
+          </Link>
+          <Link href="/admin/blogs" className={styles.navItem}>
+            <PiReadCvLogoFill size={18} />
+            {!collapsed && <span>Blogs</span>}
           </Link>
 
           <Link href="/admin/settings" className={styles.navItem}>
