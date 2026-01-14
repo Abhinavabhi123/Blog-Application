@@ -1,0 +1,100 @@
+/* Full page center */
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.06),
+      rgba(0, 0, 0, 0.95)
+    ),
+    #000;
+}
+
+/* Login card */
+.form {
+  width: 100%;
+  max-width: 420px;
+  background: #0d0d0d;
+  padding: 36px 32px;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Title */
+.form h1 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+/* Inputs */
+.form input {
+  width: 100%;
+  padding: 14px 14px;
+  background: #151515;
+  border: 1px solid #262626;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s ease, background 0.2s ease;
+}
+
+.form input::placeholder {
+  color: #888;
+}
+
+.form input:focus {
+  border-color: #ffffff;
+  background: #1a1a1a;
+}
+
+/* Error message */
+.error {
+  color: #ff6b6b;
+  font-size: 13px;
+}
+
+/* Button */
+.form button {
+  margin-top: 10px;
+  padding: 14px;
+  background: #ffffff;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.form button:hover {
+  background: #eaeaea;
+}
+
+.form button:active {
+  transform: translateY(1px);
+}
+
+.form button:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+/* Small text (optional) */
+.footerText {
+  text-align: center;
+  font-size: 12px;
+  color: #777;
+  margin-top: 8px;
+}
