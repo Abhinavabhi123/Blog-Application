@@ -1,7 +1,9 @@
+import styles from "./loading.module.css";
+
 export default function Loading() {
   return (
-    <div style={{ padding: "4rem", textAlign: "center" }}>
-      <h3>Loading...</h3>
+    <div className={styles.loaderWrapper}>
+      <div className={styles.loader}></div>
     </div>
   );
 }

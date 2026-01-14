@@ -22,7 +22,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useMemo, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { Category } from "../types";
+import { Category } from "../../../../types";
 import { errorToast, successToast } from "@/app/lib/toast";
 import { IoTrashOutline } from "react-icons/io5";
 import { MdOutlineEdit } from "react-icons/md";

@@ -1,7 +1,7 @@
 import CategoriesClient from "./components/CategoriesClient";
 import { connectDB } from "@/app/lib/mongodb";
 import CategoryModel from "@/app/models/Category";
-import type { Category, CategoryDB } from "./types";
+import type { Category, CategoryDB } from "../../../types";
 
 export default async function Page() {
   await connectDB();

@@ -4,7 +4,14 @@ import styles from "./hero.module.css";
 export default function HeroSideCard({ post }) {
   return (
     <article className={styles.sideCard}>
-      <Image src={post.image} alt={post.title} fill className={styles.image} />
+      <Image
+        src={post.image}
+        alt={post.title}
+        fill
+        className={styles.image}
+        sizes="(max-width: 768px) 100vw, 50vw"
+        loading="lazy"
+      />
       <div className={styles.overlay} />
 
       <div className={styles.content}>

@@ -8,8 +8,9 @@ export default function HeroMainCard({ post }) {
         src={post.image}
         alt={post.title}
         fill
-        priority
+        loading="lazy"
         className={styles.image}
+        sizes="(max-width: 768px) 100vw, 50vw"
       />
 
       <div className={styles.overlay} />

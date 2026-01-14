@@ -10,8 +10,9 @@ import {
   FaPinterestP,
 } from "react-icons/fa";
 import { FiSearch, FiChevronDown, FiX } from "react-icons/fi";
+import { Category } from "@/app/types";
 
-export default function Header() {
+export default function Header({ categories }: { categories: Category[] }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [blogOpen, setBlogOpen] = useState(false);
@@ -53,18 +54,11 @@ export default function Header() {
             </button>
 
             <ul className={styles.dropdownMenu}>
-              <li>
-                <Link href="/category/lifestyle">Lifestyle</Link>
-              </li>
-              <li>
-                <Link href="/category/fashion">Fashion</Link>
-              </li>
-              <li>
-                <Link href="/category/technology">Technology</Link>
-              </li>
-              <li>
-                <Link href="/category/travel">Travel</Link>
-              </li>
+              {categories.map((cat) => (
+                <li key={cat._id}>
+                  <Link href={`/category/${cat.slug}`}>{cat.name}</Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div className={styles.dropdown}>
@@ -122,30 +116,15 @@ export default function Header() {
 
           {categoriesOpen && (
             <div className={styles.drawerSubmenu}>
-              <Link href="/category/lifestyle">Lifestyle</Link>
-              <Link href="/category/fashion">Fashion</Link>
-              <Link href="/category/technology">Technology</Link>
-              <Link href="/category/travel">Travel</Link>
-              <Link href="/category/lifestyle">Lifestyle</Link>
-              <Link href="/category/fashion">Fashion</Link>
-              <Link href="/category/technology">Technology</Link>
-              <Link href="/category/travel">Travel</Link>
-              <Link href="/category/lifestyle">Lifestyle</Link>
-              <Link href="/category/fashion">Fashion</Link>
-              <Link href="/category/technology">Technology</Link>
-              <Link href="/category/travel">Travel</Link>
-              <Link href="/category/lifestyle">Lifestyle</Link>
-              <Link href="/category/fashion">Fashion</Link>
-              <Link href="/category/technology">Technology</Link>
-              <Link href="/category/travel">Travel</Link>
-              <Link href="/category/lifestyle">Lifestyle</Link>
-              <Link href="/category/fashion">Fashion</Link>
-              <Link href="/category/technology">Technology</Link>
-              <Link href="/category/travel">Travel</Link>
-              <Link href="/category/lifestyle">Lifestyle</Link>
-              <Link href="/category/fashion">Fashion</Link>
-              <Link href="/category/technology">Technology</Link>
-              <Link href="/category/travel">Travel</Link>
+              {categories.map((cat) => (
+                <Link
+                  key={cat._id}
+                  href={`/category/${cat.slug}`}
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  {cat.name}
+                </Link>
+              ))}
             </div>
           )}
 
