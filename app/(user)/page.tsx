@@ -18,7 +18,7 @@ export default async function page() {
     name: cat.name,
     slug: cat.slug,
   }));
-  await new Promise((res) => setTimeout(res, 30000));
+  await new Promise((res) => setTimeout(res, 1000));
   return (
     <div>
       <Header categories={categories} />

@@ -1,0 +1,10 @@
+.blogCreateWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 28px;
+}
+.blogCreateWrapper form{
+  width: 100%;
+}

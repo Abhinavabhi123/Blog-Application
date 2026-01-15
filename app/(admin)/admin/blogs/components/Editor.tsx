@@ -22,15 +22,26 @@ export default function Editor({ onChange, initialData }: EditorProps) {
       const Quote = (await import("@editorjs/quote")).default;
       const Code = (await import("@editorjs/code")).default;
       const ImageTool = (await import("@editorjs/image")).default;
+      const Paragraph = (await import("@editorjs/paragraph")).default;
 
       if (!holderRef.current) return;
+
+      const safeInitialData =
+        initialData && Array.isArray(initialData.blocks)
+          ? initialData
+          : { blocks: [] };
 
       editor = new EditorJS({
         holder: holderRef.current,
         autofocus: true,
         placeholder: "Start writing your blog...",
-        data: initialData,
+        data: safeInitialData,
+
         tools: {
+          paragraph: {
+            class: Paragraph,
+            inlineToolbar: true,
+          },
           header: {
             class: Header as any,
             inlineToolbar: true,
@@ -39,35 +50,41 @@ export default function Editor({ onChange, initialData }: EditorProps) {
               defaultLevel: 2,
             },
           },
-          list: {
-            class: List,
-            inlineToolbar: true,
-          },
+          list: { class: List as any, inlineToolbar: true },
           quote: {
-            class: Quote,
+            class: Quote as any,
             inlineToolbar: true,
             config: {
               quotePlaceholder: "Enter a quote",
               captionPlaceholder: "Author",
             },
           },
-          code: Code,
+          code: Code as any,
           image: {
-            class: ImageTool,
+            class: ImageTool as any,
             config: {
               uploader: {
-                uploadByFile: async (file: File) => {
-                  // demo upload (replace with API later)
-                  const url = URL.createObjectURL(file);
-                  return {
-                    success: 1,
-                    file: { url },
-                  };
+                uploadByFile(file) {
+                  const formData = new FormData();
+                  formData.append("image", file);
+
+                  return fetch("/api/editor/upload-image", {
+                    method: "POST",
+                    body: formData,
+                  })
+                    .then((res) => res.json())
+                    .then((res) => ({
+                      success: res.success,
+                      file: {
+                        url: res.file.url,
+                      },
+                    }));
                 },
               },
             },
           },
         },
+
         onChange: async () => {
           const content = await editor.save();
           onChange(content);
@@ -80,10 +97,8 @@ export default function Editor({ onChange, initialData }: EditorProps) {
     initEditor();
 
     return () => {
-      if (editorRef.current?.destroy) {
-        editorRef.current.destroy();
-        editorRef.current = null;
-      }
+      editorRef.current?.destroy();
+      editorRef.current = null;
     };
   }, [initialData, onChange]);
 

@@ -1,5 +1,7 @@
 import mongoose, { Schema, Types } from "mongoose";
 
+const dummyUserId = new mongoose.Types.ObjectId();
+
 const BlogSchema = new Schema(
   {
     title: {
@@ -22,15 +24,8 @@ const BlogSchema = new Schema(
     },
 
     content: {
-      time: Number,
-      blocks: [
-        {
-          id: String,
-          type: String,
-          data: Schema.Types.Mixed,
-        },
-      ],
-      version: String,
+      type: Schema.Types.Mixed,
+      required: true,
     },
 
     featuredImage: {
@@ -60,6 +55,7 @@ const BlogSchema = new Schema(
       ref: "User",
       required: true,
       index: true,
+      default: null,
     },
 
     status: {
@@ -114,6 +110,7 @@ const BlogSchema = new Schema(
         type: Types.ObjectId,
         required: true,
         refPath: "createdBy.model",
+        default: null,
       },
       model: {
         type: String,
