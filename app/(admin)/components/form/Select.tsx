@@ -12,12 +12,22 @@ type SelectProps = {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   options: Option[];
+  required?: boolean;
 };
 
-export function Select({ label, value, onChange, options }: SelectProps) {
+export function Select({
+  label,
+  value,
+  onChange,
+  options,
+  required,
+}: SelectProps) {
   return (
     <div className={styles.field}>
-      <label className={styles.label}>{label}</label>
+      <label className={styles.label}>
+        {label}
+        {required && <span> *</span>}
+      </label>
       <select className={styles.select} value={value} onChange={onChange}>
         <option value="">Select</option>
         {options.map((opt) => (

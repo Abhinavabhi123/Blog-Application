@@ -16,7 +16,7 @@ export default async function CreateBlogPage() {
 
   return (
     <div className={styles.blogCreateWrapper}>
-      <h1>Create Blog</h1>
+      <h1 className={styles.blogCreateTitle}>Create Blog</h1>
       <BlogForm category={categories} />
     </div>
   );

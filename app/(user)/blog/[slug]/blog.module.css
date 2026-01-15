@@ -1,0 +1,80 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 16px;
+  margin-bottom: 5rem;
+}
+.header {
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 2.4rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+  color: #111;
+}
+
+.meta {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 2rem;
+}
+
+.featuredImage img {
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+  aspect-ratio: 16 / 9;
+}
+
+.content {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.content h2 {
+  font-size: 1.6rem;
+  margin: 3rem 0 1rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.content h3 {
+  font-size: 1.3rem;
+  margin: 2.5rem 0 1rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.content ul,
+.content ol {
+  margin: 1.5rem 0 2rem 1.5rem;
+  list-style-type: disc;
+}
+.content b{
+  display: block;
+  margin: 1rem 0;
+}
+.content p b{
+  font-weight: bold;
+}
+.content li {
+  margin-bottom: 0.2rem;
+}
+
+/* ===== Code Blocks ===== */
+.code {
+  background: #f4f4f4;
+  padding: 1.25rem 1.5rem;
+  margin: 2.5rem 0;
+  overflow-x: auto;
+  border-radius: 4px;
+}
+
+.code code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9rem;
+}

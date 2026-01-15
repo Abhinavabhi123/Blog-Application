@@ -3,44 +3,69 @@
 import { Input } from "@/app/(admin)/components/form/Input";
 import Editor from "../../components/Editor";
 import { Button } from "@/app/(admin)/components/form/Button";
-import * as Yup from "yup";
-import { useState } from "react";
-import { useFormik } from "formik";
-import { errorToast, successToast } from "@/app/lib/toast";
-
-import styles from "./BlogForm.module.css";
 import { Textarea } from "@/app/(admin)/components/form/Textarea";
 import { Select } from "@/app/(admin)/components/form/Select";
+
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
+import { errorToast, successToast } from "@/app/lib/toast";
 import { Category } from "@/app/types";
+import styles from "./BlogForm.module.css";
+import Image from "next/image";
+
+const SUPPORTED_FORMATS = [
+  "image/jpg",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+];
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+const blogSchema = Yup.object({
+  title: Yup.string()
+    .trim()
+    .min(5, "Title must be at least 5 characters")
+    .max(200, "Title is too long")
+    .required("Title is required"),
+
+  excerpt: Yup.string()
+    .max(300, "Excerpt must be under 300 characters")
+    .required("Excerpt is required"),
+
+  categoryId: Yup.string().required("Category is required"),
+
+  status: Yup.mixed<"draft" | "published">()
+    .oneOf(["draft", "published"])
+    .required(),
+
+  featuredImage: Yup.mixed<File>()
+    .required("Image is required!")
+    .test(
+      "fileSize",
+      "Image must be less than 5MB",
+      (file) => !file || file.size <= MAX_FILE_SIZE
+    )
+    .test(
+      "fileFormat",
+      "Unsupported image format",
+      (file) => !file || SUPPORTED_FORMATS.includes(file.type)
+    ),
+});
 
 export default function BlogForm({ category }: { category: Category[] }) {
   const router = useRouter();
 
   const [editorContent, setEditorContent] = useState<any>(null);
-  const [featuredFile, setFeaturedFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+
   const categoryOptions = category.map((cat) => ({
     value: cat._id.toString(),
     label: cat.name,
   }));
-
-  const blogSchema = Yup.object({
-    title: Yup.string()
-      .trim()
-      .min(5, "Title must be at least 5 characters")
-      .max(200, "Title is too long")
-      .required("Title is required"),
-
-    excerpt: Yup.string()
-      .max(300, "Excerpt must be under 300 characters")
-      .nullable(),
-
-    categoryId: Yup.string().required("Category is required"),
-
-    status: Yup.mixed<"draft" | "published">()
-      .oneOf(["draft", "published"])
-      .required(),
-  });
 
   const formik = useFormik({
     initialValues: {
@@ -48,6 +73,7 @@ export default function BlogForm({ category }: { category: Category[] }) {
       excerpt: "",
       categoryId: "",
       status: "draft" as "draft" | "published",
+      featuredImage: null as File | null,
     },
     validationSchema: blogSchema,
     onSubmit: async (values, { setSubmitting }) => {
@@ -64,8 +90,8 @@ export default function BlogForm({ category }: { category: Category[] }) {
       formData.append("status", values.status);
       formData.append("content", JSON.stringify(editorContent));
 
-      if (featuredFile) {
-        formData.append("featuredImage", featuredFile);
+      if (values.featuredImage) {
+        formData.append("featuredImage", values.featuredImage);
       }
 
       try {
@@ -89,57 +115,113 @@ export default function BlogForm({ category }: { category: Category[] }) {
     },
   });
 
+  useEffect(() => {
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
+
   return (
     <form onSubmit={formik.handleSubmit}>
+      {/* Title */}
       <Input
         label="Title"
-        value={formik.values.title}
         required
+        value={formik.values.title}
         onChange={(e) => formik.setFieldValue("title", e.target.value)}
       />
       {formik.touched.title && formik.errors.title && (
         <p className={styles.error}>{formik.errors.title}</p>
       )}
+
+      {/* Excerpt */}
       <Textarea
         label="Excerpt"
         value={formik.values.excerpt}
+        required
         onChange={(e) => formik.setFieldValue("excerpt", e.target.value)}
       />
+      <p className={styles.excerptCount}>{`${
+        formik.values.excerpt.length || 0
+      }/300`}</p>
       {formik.touched.excerpt && formik.errors.excerpt && (
         <p className={styles.error}>{formik.errors.excerpt}</p>
       )}
+
+      {/* Category */}
       <Select
         label="Category"
         value={formik.values.categoryId}
-        onChange={(e) => formik.setFieldValue("categoryId", e.target.value)}
         options={categoryOptions}
+        required
+        onChange={(e) => formik.setFieldValue("categoryId", e.target.value)}
       />
       {formik.touched.categoryId && formik.errors.categoryId && (
         <p className={styles.error}>{formik.errors.categoryId}</p>
       )}
+
+      {/* Featured Image */}
       <Input
         label="Featured Image"
         type="file"
-        value=""
-        onChange={(e) => setFeaturedFile(e.target.files?.[0] || null)}
+        value={""}
+        required
+        onChange={(e) => {
+          const file = e.target.files?.[0] || null;
+          formik.setFieldValue("featuredImage", file);
+
+          if (file) {
+            setPreview(URL.createObjectURL(file));
+          } else {
+            setPreview(null);
+          }
+        }}
       />
+      {formik.touched.featuredImage && formik.errors.featuredImage && (
+        <p className={styles.error}>{formik.errors.featuredImage}</p>
+      )}
+
+      {/* Image Preview */}
+      {preview && (
+        <div className={styles.imagePreview}>
+          <Image
+            src={preview}
+            alt="Featured Preview"
+            fill
+            unoptimized
+            style={{ objectFit: "cover" }}
+          />
+        </div>
+      )}
+
+      {/* Editor */}
+      <label className={styles.contentLabel}>Content</label>
       <Editor onChange={setEditorContent} />
+
+      {/* Actions */}
       <div className={styles.actions}>
         <Button
           variant="secondary"
-          onClick={() => formik.setFieldValue("status", "draft")}
           type="submit"
+          onClick={() => formik.setFieldValue("status", "draft")}
+          disabled={formik.isSubmitting}
         >
-          Save Draft
+          {formik.values.status === "draft" && formik.isSubmitting
+            ? "Saving..."
+            : "Save Draft"}
         </Button>
 
         <Button
           variant="primary"
-          onClick={() => formik.setFieldValue("status", "published")}
           type="submit"
+          onClick={() => formik.setFieldValue("status", "published")}
           disabled={formik.isSubmitting}
         >
-          Publish
+          {formik.values.status === "published" && formik.isSubmitting
+            ? "Publishing..."
+            : "Publish"}
         </Button>
       </div>
     </form>

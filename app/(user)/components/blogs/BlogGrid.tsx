@@ -25,7 +25,7 @@ export default function BlogGrid({ blogs }: { blogs: Blog[] }) {
             <article key={blog._id} className={styles.card}>
               {/* Image */}
               <Link
-                href={`/blogs/${blog.slug}`}
+                href={`/blog/${blog.slug}`}
                 className={styles.imageWrapper}
               >
                 <Image
@@ -46,7 +46,7 @@ export default function BlogGrid({ blogs }: { blogs: Blog[] }) {
                 )}
 
                 <h2 className={styles.title}>
-                  <Link href={`/blogs/${blog.slug}`}>{blog.title}</Link>
+                  <Link href={`/blog/${blog.slug}`}>{blog.title}</Link>
                 </h2>
 
                 {blog.excerpt && (

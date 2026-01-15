@@ -36,16 +36,13 @@ export async function generateImageSizes(
 
   result.original = `${publicBasePath}/${originalFileName}`;
 
-  /* =====================
-     RESIZED
-  ====================== */
   for (const size of sizes) {
     const fileName = `${baseName}-${size.key}.webp`;
     const diskPath = path.join(outputDir, fileName);
 
     await sharp(buffer)
       .resize(size.width)
-      .webp({ quality: 80 })
+      .webp({ quality: 90 })
       .toFile(diskPath);
 
     result[size.key] = `${publicBasePath}/${fileName}`;
