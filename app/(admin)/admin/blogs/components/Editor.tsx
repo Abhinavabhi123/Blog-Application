@@ -11,8 +11,11 @@ type EditorProps = {
 export default function Editor({ onChange, initialData }: EditorProps) {
   const editorRef = useRef<any>(null);
   const holderRef = useRef<HTMLDivElement>(null);
-
+  const isReadyRef = useRef(false);
   useEffect(() => {
+    if (isReadyRef.current) return;
+    isReadyRef.current = true;
+
     let editor: any;
 
     const initEditor = async () => {
@@ -97,8 +100,15 @@ export default function Editor({ onChange, initialData }: EditorProps) {
     initEditor();
 
     return () => {
-      editorRef.current?.destroy();
-      editorRef.current = null;
+      if (editorRef.current) {
+        editorRef.current.isReady
+          .then(() => {
+            editorRef.current?.destroy();
+            editorRef.current = null;
+            isReadyRef.current = false;
+          })
+          .catch(() => {});
+      }
     };
   }, [initialData, onChange]);
 

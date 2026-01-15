@@ -6,6 +6,7 @@ import { connectDB } from "@/app/lib/mongodb";
 import { generateImageSizes } from "@/app/lib/imageProcessor";
 import { slugify } from "@/app/lib/slugify";
 import { getAdminFromCookie } from "@/app/lib/auth/adminAuth";
+
 export async function POST(request: Request) {
   try {
     await connectDB();
@@ -63,11 +64,7 @@ export async function POST(request: Request) {
 
     if (featuredFile?.type.startsWith("image/")) {
       const buffer = Buffer.from(await featuredFile.arrayBuffer());
-      featuredImage = await generateImageSizes(
-        buffer,
-        uploadDir,
-        "featured"
-      );
+      featuredImage = await generateImageSizes(buffer, uploadDir, "featured");
     }
 
     const blog = await Blog.create({

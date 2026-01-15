@@ -1,5 +1,6 @@
 import { connectDB } from "../lib/mongodb";
 import { Category, CategoryDB } from "../types";
+import Blogs from "./components/blogs/Blogs";
 import { heroSlides } from "./components/constants";
 import Header from "./components/Header/Header";
 import HeroSection from "./components/Hero/HeroSection";
@@ -23,6 +24,7 @@ export default async function page() {
     <div>
       <Header categories={categories} />
       <HeroSection main={heroSlides.main} side={heroSlides.side} />
+      <Blogs />
     </div>
   );
 }

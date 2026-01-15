@@ -12,3 +12,17 @@ export type CategoryDB = {
   slug?: string;
   createdAt?: Date;
 };
+export type Blog = {
+  _id: string;
+  title: string;
+  slug: string;
+  status: "draft" | "published";
+  createdAt?: string;
+};
+export type BlogDB = {
+  _id: Types.ObjectId;
+  title: string;
+  slug: string;
+  status: "draft" | "published";
+  createdAt?: Date;
+};

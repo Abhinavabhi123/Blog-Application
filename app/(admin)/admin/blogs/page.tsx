@@ -1,29 +1,31 @@
 import BlogsClient from "./components/BlogsClient";
+import { connectDB } from "@/app/lib/mongodb";
+import Blog from "@/app/models/Blog";
+import { BlogDB } from "@/app/types";
 
-const demoBlogs = [
-  {
-    _id: "1",
-    title: "This Is A Standard Format Post",
-    slug: "this-is-a-standard-format-post",
-    status: "published",
-    createdAt: "2024-01-10T10:30:00.000Z",
-  },
-  {
-    _id: "2",
-    title: "Minimalism in Modern Web Design",
-    slug: "minimalism-in-modern-web-design",
-    status: "draft",
-    createdAt: "2024-01-05T08:15:00.000Z",
-  },
-  {
-    _id: "3",
-    title: "Why Performance Matters in Next.js",
-    slug: "why-performance-matters-in-nextjs",
-    status: "published",
-    createdAt: "2023-12-28T14:45:00.000Z",
-  },
-];
+export default async function Page() {
+  await connectDB();
 
-export default function Page() {
-  return <BlogsClient initialBlogs={demoBlogs} />;
+  const page = 1; 
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
+  const [blogs, total] = await Promise.all([
+    Blog.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean<BlogDB[]>(),
+    Blog.countDocuments(),
+  ]);
+
+  const serializedBlogs = blogs.map((b) => ({
+    _id: b._id.toString(),
+    title: b.title,
+    slug: b.slug,
+    status: b.status,
+    createdAt: b.createdAt?.toISOString(),
+  }));
+
+  return <BlogsClient initialBlogs={serializedBlogs} initialTotal={total} />;
 }

@@ -12,9 +12,7 @@ export async function generateImageSizes(
   }
 
   const sizes = [
-    { key: "large", width: 1600 },
     { key: "medium", width: 800 },
-    { key: "thumb", width: 300 },
   ];
 
   const result: Record<string, string> = {};
