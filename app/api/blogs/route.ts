@@ -28,7 +28,8 @@ export async function POST(request: Request) {
 
     try {
       content = JSON.parse(formData.get("content") as string);
-      tags = JSON.parse((formData.get("tags") as string) || "[]");
+      const tagsRaw = formData.get("tags");
+      tags= tagsRaw ? JSON.parse(tagsRaw as string) : [];
     } catch {
       return NextResponse.json(
         { message: "Invalid JSON payload" },

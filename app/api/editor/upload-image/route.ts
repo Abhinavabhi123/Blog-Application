@@ -44,16 +44,12 @@ export async function POST(request: Request) {
       imageId
     );
 
-    const image = await generateImageSizes(
-      buffer,
-      uploadDir,
-      "editor"
-    );
+    const image = await generateImageSizes(buffer, uploadDir, "editor");
 
     return NextResponse.json({
       success: 1,
       file: {
-        url: image.large, // PUBLIC URL
+        url: image, 
       },
     });
   } catch (error) {

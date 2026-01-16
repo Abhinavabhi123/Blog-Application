@@ -187,7 +187,7 @@ export default function BlogsClient({
                   <TableCell>
                     <Box>
                       <Tooltip title="Edit" arrow>
-                        <IconButton>
+                        <IconButton onClick={() => router.push(`/admin/blogs/edit/${blog._id}`)}>
                           <MdOutlineEdit color="blue" size={18} />
                         </IconButton>
                       </Tooltip>

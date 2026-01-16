@@ -3,12 +3,13 @@
 import styles from "./form.module.css";
 
 type InputProps = {
-  label: string;
+  label?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   type?: string;
   required?: boolean;
+  onKeyDown?: (e: any) => void;
 };
 
 export function Input({
@@ -18,11 +19,12 @@ export function Input({
   placeholder,
   type = "text",
   required,
+  onKeyDown,
 }: InputProps) {
   return (
     <div className={styles.field}>
       <label className={styles.label}>
-        {label} {required && <span>*</span>}
+        {label && label} {required && <span>*</span>}
       </label>
       <input
         className={styles.input}
@@ -30,6 +32,7 @@ export function Input({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        onKeyDown={onKeyDown}
       />
     </div>
   );

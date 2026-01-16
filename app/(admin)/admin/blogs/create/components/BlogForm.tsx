@@ -16,6 +16,23 @@ import { Category } from "@/app/types";
 import styles from "./BlogForm.module.css";
 import Image from "next/image";
 
+type BlogFormProps = {
+  category: Category[];
+  mode?: "create" | "edit";
+  initialData?: {
+    _id: string;
+    title: string;
+    excerpt: string;
+    categoryId: string;
+    status: "draft" | "published";
+    content: any;
+    tags?: string[];
+    featuredImage?: {
+      medium: string;
+    };
+  };
+};
+
 const SUPPORTED_FORMATS = [
   "image/jpg",
   "image/jpeg",
@@ -25,42 +42,60 @@ const SUPPORTED_FORMATS = [
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-const blogSchema = Yup.object({
-  title: Yup.string()
-    .trim()
-    .min(5, "Title must be at least 5 characters")
-    .max(200, "Title is too long")
-    .required("Title is required"),
+const blogSchema = (mode: "create" | "edit") =>
+  Yup.object({
+    title: Yup.string()
+      .trim()
+      .min(5, "Title must be at least 5 characters")
+      .max(200, "Title is too long")
+      .required("Title is required"),
 
-  excerpt: Yup.string()
-    .max(300, "Excerpt must be under 300 characters")
-    .required("Excerpt is required"),
+    excerpt: Yup.string()
+      .max(300, "Excerpt must be under 300 characters")
+      .required("Excerpt is required"),
 
-  categoryId: Yup.string().required("Category is required"),
+    categoryId: Yup.string().required("Category is required"),
 
-  status: Yup.mixed<"draft" | "published">()
-    .oneOf(["draft", "published"])
-    .required(),
+    status: Yup.mixed<"draft" | "published">()
+      .oneOf(["draft", "published"])
+      .required(),
+    tags: Yup.array()
+      .of(Yup.string().trim().min(2))
+      .min(1, "At least one tag is required")
+      .max(10, "Maximum 10 tags allowed"),
 
-  featuredImage: Yup.mixed<File>()
-    .required("Image is required!")
-    .test(
-      "fileSize",
-      "Image must be less than 5MB",
-      (file) => !file || file.size <= MAX_FILE_SIZE
-    )
-    .test(
-      "fileFormat",
-      "Unsupported image format",
-      (file) => !file || SUPPORTED_FORMATS.includes(file.type)
-    ),
-});
+    featuredImage: Yup.mixed<File>()
+      .nullable()
+      .test(
+        "required-image",
+        "Image is required",
+        (file) => mode === "edit" || !!file
+      )
+      .test(
+        "fileSize",
+        "Image must be less than 5MB",
+        (file) => !file || file.size <= MAX_FILE_SIZE
+      )
+      .test(
+        "fileFormat",
+        "Unsupported image format",
+        (file) => !file || SUPPORTED_FORMATS.includes(file.type)
+      ),
+  });
 
-export default function BlogForm({ category }: { category: Category[] }) {
+export default function BlogForm({
+  category,
+  mode = "create",
+  initialData,
+}: BlogFormProps) {
   const router = useRouter();
 
-  const [editorContent, setEditorContent] = useState<any>(null);
+  const [editorContent, setEditorContent] = useState<any>(
+    mode === "edit" ? initialData?.content : null
+  );
+
   const [preview, setPreview] = useState<string | null>(null);
+  const [tagInput, setTagInput] = useState("");
 
   const categoryOptions = category.map((cat) => ({
     value: cat._id.toString(),
@@ -68,14 +103,16 @@ export default function BlogForm({ category }: { category: Category[] }) {
   }));
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: "",
-      excerpt: "",
-      categoryId: "",
-      status: "draft" as "draft" | "published",
+      title: initialData?.title || "",
+      excerpt: initialData?.excerpt || "",
+      categoryId: initialData?.categoryId || "",
+      status: initialData?.status || "draft",
       featuredImage: null as File | null,
+      tags: initialData?.tags || [],
     },
-    validationSchema: blogSchema,
+    validationSchema: blogSchema(mode),
     onSubmit: async (values, { setSubmitting }) => {
       if (!editorContent) {
         errorToast("Blog content is required");
@@ -89,19 +126,29 @@ export default function BlogForm({ category }: { category: Category[] }) {
       formData.append("category", values.categoryId);
       formData.append("status", values.status);
       formData.append("content", JSON.stringify(editorContent));
+      formData.append("tags", JSON.stringify(values.tags));
 
       if (values.featuredImage) {
         formData.append("featuredImage", values.featuredImage);
       }
 
       try {
-        const res = await fetch("/api/blogs", {
-          method: "POST",
+        const url =
+          mode === "edit"
+            ? `/api/admin/blogs/${initialData?._id}`
+            : `/api/admin/blogs`;
+
+        const method = mode === "edit" ? "PUT" : "POST";
+
+        const res = await fetch(url, {
+          method,
           body: formData,
         });
 
         if (!res.ok) {
-          errorToast("Failed to create blog");
+          errorToast(
+            mode === "edit" ? "Failed to create blog" : "Failed to Update blog"
+          );
           return;
         }
 
@@ -161,6 +208,52 @@ export default function BlogForm({ category }: { category: Category[] }) {
       {formik.touched.categoryId && formik.errors.categoryId && (
         <p className={styles.error}>{formik.errors.categoryId}</p>
       )}
+      {/* Tags */}
+      <div className={styles.tagsInput}>
+        <Input
+          type="text"
+          label="Tags"
+          placeholder="Type tag and press Enter"
+          value={tagInput}
+          onChange={(e) => setTagInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && tagInput.trim()) {
+              e.preventDefault();
+
+              if (!formik.values.tags.includes(tagInput.trim())) {
+                formik.setFieldValue("tags", [
+                  ...formik.values.tags,
+                  tagInput.trim(),
+                ]);
+              }
+              setTagInput("");
+            }
+          }}
+        />
+      </div>
+
+      {formik.touched.tags && formik.errors.tags && (
+        <p className={styles.error}>{formik.errors.tags as string}</p>
+      )}
+
+      <div className={styles.tagsList}>
+        {formik.values.tags.map((tag, index) => (
+          <span key={index} className={styles.tag}>
+            {tag}
+            <button
+              type="button"
+              onClick={() =>
+                formik.setFieldValue(
+                  "tags",
+                  formik.values.tags.filter((_, i) => i !== index)
+                )
+              }
+            >
+              ×
+            </button>
+          </span>
+        ))}
+      </div>
 
       {/* Featured Image */}
       <Input
@@ -182,6 +275,16 @@ export default function BlogForm({ category }: { category: Category[] }) {
       {formik.touched.featuredImage && formik.errors.featuredImage && (
         <p className={styles.error}>{formik.errors.featuredImage}</p>
       )}
+      {mode === "edit" && initialData?.featuredImage?.medium && !preview && (
+        <div className={styles.imagePreview}>
+          <Image
+            src={initialData.featuredImage.medium}
+            alt="Current Image"
+            fill
+            style={{ objectFit: "cover" }}
+          />
+        </div>
+      )}
 
       {/* Image Preview */}
       {preview && (
@@ -198,7 +301,7 @@ export default function BlogForm({ category }: { category: Category[] }) {
 
       {/* Editor */}
       <label className={styles.contentLabel}>Content</label>
-      <Editor onChange={setEditorContent} />
+      <Editor onChange={setEditorContent} initialData={editorContent} />
 
       {/* Actions */}
       <div className={styles.actions}>
@@ -220,8 +323,8 @@ export default function BlogForm({ category }: { category: Category[] }) {
           disabled={formik.isSubmitting}
         >
           {formik.values.status === "published" && formik.isSubmitting
-            ? "Publishing..."
-            : "Publish"}
+            ? `${mode === "edit" ? "Updating..." : "Publishing..."}`
+            : `${mode === "edit" ? "Update Blog" : "Publish"}`}
         </Button>
       </div>
     </form>

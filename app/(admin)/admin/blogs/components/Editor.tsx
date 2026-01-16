@@ -76,12 +76,16 @@ export default function Editor({ onChange, initialData }: EditorProps) {
                     body: formData,
                   })
                     .then((res) => res.json())
-                    .then((res) => ({
-                      success: res.success,
-                      file: {
-                        url: res.file.url,
-                      },
-                    }));
+                    .then((res) => {
+                      console.log(res, "res");
+
+                      return {
+                        success: 1, // IMPORTANT: must be number 1
+                        file: {
+                          url: res.file?.url?.medium,
+                        },
+                      };
+                    });
                 },
               },
             },

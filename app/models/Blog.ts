@@ -43,12 +43,7 @@ const BlogSchema = new Schema(
       index: true,
     },
 
-    tags: [
-      {
-        type: Types.ObjectId,
-        ref: "Tag",
-      },
-    ],
+    tags: [String],
 
     author: {
       type: Types.ObjectId,

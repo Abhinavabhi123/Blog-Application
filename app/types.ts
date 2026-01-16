@@ -25,12 +25,13 @@ export type BlogDB = {
   slug: string;
   status: "draft" | "published";
   createdAt?: Date;
-  excerpt?: string;
+  excerpt: string;
   featuredImage: {
     original: string;
     medium: string;
   };
-  category?: Types.ObjectId;
+  category: Types.ObjectId;
   publishedAt: Date;
   content?: any;
+  tags:string[]
 };

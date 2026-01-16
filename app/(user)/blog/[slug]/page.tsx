@@ -1,10 +1,10 @@
-import styles from "./blog.module.css"
+import styles from "./blog.module.css";
 import { notFound } from "next/navigation";
 import BlogHeader from "./components/BlogHeader";
 import BlogContent from "./components/BlogContent";
 import { connectDB } from "@/app/lib/mongodb";
 import Blog from "@/app/models/Blog";
-import { BlogDB} from "@/app/types";
+import { BlogDB } from "@/app/types";
 
 async function getBlog(slug: string) {
   await connectDB();
@@ -21,6 +21,7 @@ async function getBlog(slug: string) {
     publishedAt: blog.publishedAt.toISOString(),
     featuredImage: blog.featuredImage,
     content: blog.content,
+    tags:blog.tags
   };
 }
 
@@ -43,7 +44,7 @@ export default async function BlogPage(props: {
         image={blog.featuredImage.medium}
       />
 
-      <BlogContent blocks={blog.content.blocks} />
+      <BlogContent blocks={blog.content.blocks} tags={blog.tags} />
     </div>
   );
 }

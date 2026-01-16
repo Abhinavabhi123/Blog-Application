@@ -54,11 +54,11 @@
   margin: 1.5rem 0 2rem 1.5rem;
   list-style-type: disc;
 }
-.content b{
+.content b {
   display: block;
   margin: 1rem 0;
 }
-.content p b{
+.content p b {
   font-weight: bold;
 }
 .content li {
@@ -77,4 +77,45 @@
 .code code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.9rem;
+}
+.imageWrapper {
+  margin: 24px 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 4rem 0;
+  position: relative;
+  aspect-ratio: 16 / 9;
+}
+
+.imageWrapper img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.imageWrapper figcaption {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #666;
+  position: absolute;
+  bottom: -2rem;
+  left: 50%;
+}
+.tagsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tag {
+  font-size: 14px;
+  background: #f3f4f6;
+  color: #374151;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 500;
 }
