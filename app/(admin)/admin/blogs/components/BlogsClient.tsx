@@ -21,6 +21,8 @@ import {
 } from "@mui/material";
 import { MdOutlineEdit } from "react-icons/md";
 import { IoTrashOutline } from "react-icons/io5";
+import swal from "sweetalert";
+import { errorToast, successToast } from "@/app/lib/toast";
 
 type Blog = {
   _id: string;
@@ -89,6 +91,32 @@ export default function BlogsClient({
   const handleSearch = () => {
     setPage(0);
     fetchBlogs(0, rowsPerPage, search);
+  };
+
+  // delete blog
+  const deleteBlog = (id: string) => {
+    swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this category and related details!",
+      icon: "warning",
+      buttons: ["Cancel", "Delete"],
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        try {
+          const res = await fetch(`/api/admin/blogs/${id}`, {
+            method: "DELETE",
+          });
+          if (!res.ok) {
+            return errorToast("Something issue while deleting the blog");
+          }
+          successToast("Blog deleted successfully");
+          setBlogs((prev) => prev.filter((blog) => blog._id !== id));
+        } catch (error) {
+          console.log("Error while deleting the blog", error);
+        }
+      }
+    });
   };
 
   return (
@@ -187,12 +215,16 @@ export default function BlogsClient({
                   <TableCell>
                     <Box>
                       <Tooltip title="Edit" arrow>
-                        <IconButton onClick={() => router.push(`/admin/blogs/edit/${blog._id}`)}>
+                        <IconButton
+                          onClick={() =>
+                            router.push(`/admin/blogs/edit/${blog._id}`)
+                          }
+                        >
                           <MdOutlineEdit color="blue" size={18} />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete" arrow>
-                        <IconButton>
+                        <IconButton onClick={() => deleteBlog(blog._id)}>
                           <IoTrashOutline color="red" size={18} />
                         </IconButton>
                       </Tooltip>

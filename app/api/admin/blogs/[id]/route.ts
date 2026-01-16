@@ -82,3 +82,20 @@ export async function PUT(
     );
   }
 }
+
+// to delete the blog data
+export async function DELETE(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  await connectDB();
+  const {id} = await context.params
+  console.log(id,"iddd")
+  const blog = await Blog.findByIdAndDelete(id);
+
+  if (!blog) {
+    return NextResponse.json({ message: "Blog not found" }, { status: 404 });
+  }
+
+  return NextResponse.json({ message: "Blog deleted" });
+}

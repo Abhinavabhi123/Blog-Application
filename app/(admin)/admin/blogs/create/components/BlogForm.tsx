@@ -114,6 +114,7 @@ export default function BlogForm({
     },
     validationSchema: blogSchema(mode),
     onSubmit: async (values, { setSubmitting }) => {
+      console.log("mod", mode);
       if (!editorContent) {
         errorToast("Blog content is required");
         setSubmitting(false);

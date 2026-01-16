@@ -15,10 +15,9 @@ type BlogContentProps = {
 export default function BlogContent({ blocks, tags }: BlogContentProps) {
   return (
     <>
-      {/* 🔖 TAGS */}
+      {/*  TAGS */}
       {tags && tags.length > 0 && (
         <div className={styles.tagsWrapper}>
-          {console.log(tags, "tags")}
           {tags.map((tag) => (
             <span key={tag} className={styles.tag}>
               #{tag}

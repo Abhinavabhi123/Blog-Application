@@ -141,6 +141,8 @@ export default function CategoriesClient({
         });
         const data = await res.json();
 
+        consol.el
+
         if (!res.ok) {
           errorToast(data.message || "Delete failed");
           return;
