@@ -42,7 +42,7 @@ export default function Editor({ onChange, initialData }: EditorProps) {
 
         tools: {
           paragraph: {
-            class: Paragraph,
+            class: Paragraph  as any,
             inlineToolbar: true,
           },
           header: {
