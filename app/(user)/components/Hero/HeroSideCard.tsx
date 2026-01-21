@@ -1,7 +1,8 @@
 import Image from "next/image";
 import styles from "./hero.module.css";
+import { HeroPost } from "./types";
 
-export default function HeroSideCard({ post }) {
+export default function HeroSideCard({ post }: { post: HeroPost }) {
   return (
     <article className={styles.sideCard}>
       <Image

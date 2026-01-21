@@ -67,7 +67,7 @@ export default function Editor({ onChange, initialData }: EditorProps) {
             class: ImageTool as any,
             config: {
               uploader: {
-                uploadByFile(file) {
+                uploadByFile(file: File) {
                   const formData = new FormData();
                   formData.append("image", file);
 

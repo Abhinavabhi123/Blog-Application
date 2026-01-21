@@ -1,6 +1,7 @@
 import { connectDB } from "@/app/lib/mongodb";
 import { slugify } from "@/app/lib/slugify";
 import Category from "@/app/models/Category";
+import { CategoryDB } from "@/app/types";
 import { NextResponse } from "next/server";
 
 // to create the category
@@ -80,7 +81,7 @@ export async function GET(request: Request) {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .lean(),
+        .lean<CategoryDB[]>(),
       Category.countDocuments(),
     ]);
 
