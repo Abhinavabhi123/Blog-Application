@@ -62,9 +62,9 @@ export default function HeaderClient({ categories }: { categories: Category[] })
             </ul>
           </div>
           <div className={styles.dropdown}>
-            <button className={styles.dropdownBtn}>
+            <Link href="/blogs" className={styles.dropdownBtn}>
               Blogs <FiChevronDown />
-            </button>
+            </Link>
 
             <ul className={styles.dropdownMenu}>
               <li>

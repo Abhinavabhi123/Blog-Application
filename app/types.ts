@@ -24,7 +24,7 @@ export type BlogDB = {
   title: string;
   slug: string;
   status: "draft" | "published";
-  createdAt?: Date;
+  createdAt: Date;
   excerpt: string;
   featuredImage: {
     original: string;
