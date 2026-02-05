@@ -1,4 +1,3 @@
-import Blog from "@/app/models/Blog";
 import Header from "../components/Header/Header";
 
 import styles from "./Blogs.module.css";
@@ -6,23 +5,36 @@ import Category from "@/app/models/Category";
 import BlogGrid from "./components/BlogGrid";
 import { connectDB } from "@/app/lib/mongodb";
 import Footer from "../components/Footer/Footer";
-import { BlogDB } from "@/app/types";
+
+import Blog from "@/app/models/Blog";
 
 export const dynamic = "force-dynamic";
 
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: { q?: string; category?: string };
+  searchParams: { q?: string; cat?: string };
 }) {
   await connectDB();
 
-  const q = searchParams.q || "";
-  const category = searchParams.category || "";
+  const params = await searchParams;
+
+  const q = params.q || "";
+  const categorySlug = params.cat;
 
   const filter: any = {};
   if (q) filter.title = { $regex: q, $options: "i" };
-  if (category) filter.category = category;
+  if (categorySlug) {
+    const categoryDoc = await Category.findOne({ slug: categorySlug })
+      .select("_id")
+      .lean<{ _id: string }>();
+
+    if (categoryDoc) {
+      filter.category = categoryDoc._id;
+    } else {
+      filter.category = null;
+    }
+  }
 
   const blogs = (
     await Blog.find(filter)
@@ -36,7 +48,7 @@ export default async function BlogPage({
     excerpt: b.excerpt,
     featuredImage: b.featuredImage,
     category: b.category?.toString(),
-    createdAt: b.createdAt ,
+    createdAt: b.createdAt,
   }));
 
   const categories = await Category.find()
@@ -63,7 +75,7 @@ export default async function BlogPage({
             slug: c.slug,
           }))}
           search={q}
-          selectedCategory={category}
+          selectedCategory={categorySlug}
         />
       </main>
       <Footer />
