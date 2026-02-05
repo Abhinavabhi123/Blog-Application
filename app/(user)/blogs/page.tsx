@@ -7,6 +7,7 @@ import { connectDB } from "@/app/lib/mongodb";
 import Footer from "../components/Footer/Footer";
 
 import Blog from "@/app/models/Blog";
+import { BlogDB } from "@/app/types";
 
 export const dynamic = "force-dynamic";
 
